@@ -1,29 +1,29 @@
 <?php
-require_once 'models/Person.php';
 
-class PersonRepository {
-
+class MovieRepository {
+    
     private $dataSource;
-
+    
     public function __construct($dataSource) {
         $this->dataSource = $dataSource;
     }
-
+    
     public function findAll() {
         $connection = $this->dataSource->getConnection();
-        $preparedStatement = $connection->prepare("SELECT * FROM person");
+        $preparedStatement = $connection->prepare("SELECT * FROM movie");
         $preparedStatement->execute();
         $resultSet = $preparedStatement->get_result();
-        $persons = array();
+        $movies = array();
         while($row = $resultSet->fetch_assoc()) {
-            $person = new Person();
-            $person->setFirstName(utf8_encode($row["first_name"]));
-            $person->setLastName(utf8_encode($row["last_name"]));
-            array_push($persons, $person);
+            $movie = array();
+            $movie['id'] = $row['id'];
+            $movie['title'] = $row['title'];
+            array_push($movies, $movie);
         }
         $resultSet->close();
         $preparedStatement->close();
-        return $persons;
+        return $movies;
     }
-
 }
+
+?>
