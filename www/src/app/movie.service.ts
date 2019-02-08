@@ -19,9 +19,7 @@ export class MovieService {
   constructor(private httpClient: HttpClient) {}
   
   fetchMovies(): Observable<Movie[]> {
-    const url = `${environment.baseUrl}`;
-    console.log(`ZEH URL ${url}`);
-    return this.httpClient.get<Movie[]>(url, httpHeaders).pipe(
+    return this.httpClient.get<Movie[]>(environment.baseUrl, httpHeaders).pipe(
       tap(movies => console.log(`Fetched [${movies.length}] movies`)),
       catchError(this.onError<Movie[]>("fetchMovies", []))
     );
