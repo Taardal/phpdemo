@@ -3,10 +3,12 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { catchError, tap, map } from "rxjs/operators";
 import { Movie } from "./movie";
+import { environment } from "../environments/environment"
 
 const httpHeaders = {
   headers: new HttpHeaders({
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
+    "responseType": "text"
   })
 };
 
@@ -15,20 +17,19 @@ const httpHeaders = {
 })
 export class MovieService {
   constructor(private httpClient: HttpClient) {}
-
+  
   fetchMovies(): Observable<Movie[]> {
-    const url = "http://localhost:4201";
+    const url = `${environment.baseUrl}`;
+    console.log(`ZEH URL ${url}`);
     return this.httpClient.get<Movie[]>(url, httpHeaders).pipe(
-      tap(_ => console.log("Fetching movies...")),
-      catchError(this.onError("fetchHeroes", []))
+      tap(movies => console.log(`Fetched [${movies.length}] movies`)),
+      catchError(this.onError<Movie[]>("fetchMovies", []))
     );
   }
 
   private onError<T>(operation = "operation", result?: T) {
     return (error: any): Observable<T> => {
-      console.error(
-        `[${operation}] failed with error [${error.status} / ${error.message}]`
-      );
+      console.error(`[${operation}] failed with error [${error.status} / ${error.message}]`);
       return of(result as T);
     };
   }
