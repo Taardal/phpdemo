@@ -14,10 +14,5 @@ $router->add("movie", function($request) use ($dataSource) {
     $movieController->receive($request);
 });
 
-$method = $_SERVER['REQUEST_METHOD'];
-$uri = $_SERVER['REQUEST_URI'];
-$json = file_get_contents("php://input");
-$request = new Request($method, $uri, $json);
-
+$request = new Request();
 $router->receive("movie", $request);
-?>

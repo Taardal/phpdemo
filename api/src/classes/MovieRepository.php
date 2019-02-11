@@ -1,5 +1,4 @@
 <?php
-
 class MovieRepository {
     
     private $dataSource;
