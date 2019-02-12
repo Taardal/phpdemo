@@ -1,16 +1,22 @@
 <?php
 class Router {
 
+    private const PATH_SEPARATOR = "/";
     private $routes = array();
 
     public function add($route, $function) {
         $this->routes[$route] = $function;
     }
 
-    public function receive($route, $request) {
-        if (array_key_exists($route, $this->routes)) {
+    public function receive($request) {
+        $route = $request->getPathParameters()[0];
+        if ($this->isValidRoute($route)) {
             $this->routes[$route]($request);
         }
-    } 
+    }
+
+    private function isValidRoute($route) {
+        return $route != null && strlen($route) > 0 && array_key_exists($route, $this->routes);
+    }
 
 }
