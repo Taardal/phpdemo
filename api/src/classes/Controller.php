@@ -1,10 +1,18 @@
 <?php
 abstract class Controller {
 
-    public abstract function receive($request);
+    public function receive($request) {
+        switch ($request->getMethod()) {
+            case "GET":
+                $this->receiveGet($request);
+                break;
+            default:
+                Response::notFound()->send();
+        }
+    }
 
-    protected function respondOk($data) {
-        echo json_encode($data);
+    protected function receiveGet($request) {
+        Response::notFound()->send();
     }
 
 }

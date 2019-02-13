@@ -2,8 +2,6 @@
 class MovieController extends Controller {
 
     public const ROUTE = "movie";
-    public const GET_ALL_REGEX = "/\\/" . self::ROUTE . "(\\/)?$/";
-    public const GET_BY_ID_REGEX = "/\\/" . self::ROUTE . "\\/([A-Za-z0-9]+)$/";
     
     private $movieRepository;
 
@@ -11,36 +9,35 @@ class MovieController extends Controller {
         $this->movieRepository = $movieRepository;
     }
 
-    public function receive($request) {
-        switch ($request->getMethod()) {
-            case "GET":
-                $this->receiveGet($request);
-                break;
-            default:
-                echo "Invalid request method";
+    protected function receiveGet($request) {
+        if ($this->isGetAll($request)) {
+            $this->getAll();
+        } else if ($this->isGetById($request)) {
+            $this->getById($request);
+        } else {
+            parent::receiveGet($request);
         }
     }
 
-    private function receiveGet($request) {
-        if (preg_match(self::GET_ALL_REGEX, $request->getPath())) {
-            $this->getAll();
-        } else if (preg_match(self::GET_BY_ID_REGEX, $request->getPath())) {
-            $this->getById($request);
-        } else {
-            http_response_code(404);
-            die("Invalid path");
-        }
+    private function isGetAll($request) {
+        $regex = "/\\/" . self::ROUTE . "(\\/)?$/";
+        return preg_match($regex, $request->getPath());
     }
 
     private function getAll() {
         $movies = $this->movieRepository->findAll();
-        $this->respondOk($movies);    
+        Response::ok($movies)->send();    
+    }
+
+    private function isGetById($request) {
+        $regex = "/\\/" . self::ROUTE . "\\/([A-Za-z0-9]+)$/";
+        return preg_match($regex, $request->getPath());
     }
 
     private function getById($request) {
-        $id = $request->getPathParameters()[1];
+        $id = $request->getPathParameters()[sizeof($request->getPathParameters()) - 1];
         $movie = $this->movieRepository->findById($id);
-        $this->respondOk($movie);    
+        Response::ok($movie)->send(); 
     }
 
 }

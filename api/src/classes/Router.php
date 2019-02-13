@@ -12,6 +12,8 @@ class Router {
         $route = $request->getPathParameters()[0];
         if ($this->isValidRoute($route)) {
             $this->routes[$route]($request);
+        } else {
+            Response::notFound()->send();
         }
     }
 
