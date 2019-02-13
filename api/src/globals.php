@@ -5,6 +5,16 @@ function println($variable) {
     echo("\n");
 }
 
-function isNumeric($string) {
-    return $string != null && strlen($string) > 0 && ctype_digit($string);
+function str_numeric($string) {
+    return $string && strlen($string) > 0 && ctype_digit($string);
+}
+
+function str_begins_with($target, $string) {
+    $start = 0;
+    $end = $start + strlen($target);
+    return $string && strlen($string) > 0 && substr($string, $start, $end) === $target;
+}
+
+function str_ends_with($target, $string) {
+    return $string && strlen($string) > 0 && substr($string, -strlen($target)) === $target;
 }

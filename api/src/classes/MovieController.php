@@ -30,7 +30,7 @@ class MovieController extends Controller {
     }
 
     private function isGetById($request) {
-        $regex = "/\\/" . self::ROUTE . "\\/([A-Za-z0-9]+)$/";
+        $regex = "/\\/" . self::ROUTE . "\\/([A-Za-z0-9]+)(\\/)?$/";
         return preg_match($regex, $request->getPath());
     }
 
