@@ -37,7 +37,8 @@ class MovieController extends Controller {
     private function getById($request) {
         $id = $request->getPathParameters()[sizeof($request->getPathParameters()) - 1];
         $movie = $this->movieRepository->findById($id);
-        Response::ok($movie)->send(); 
+        $response = $movie ? Response::ok($movie) : Response::notFound();
+        $response->send(); 
     }
 
 }

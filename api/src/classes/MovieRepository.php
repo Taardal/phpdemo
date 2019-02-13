@@ -24,7 +24,7 @@ class MovieRepository {
     public function findById($id) {
         $connection = $this->dataSource->getConnection();
         $preparedStatement = $connection->prepare("SELECT * FROM movie WHERE id = ?");
-        $preparedStatement->bind_param("i", $id);
+        $preparedStatement->bind_param("s", $id);
         $preparedStatement->execute();
         $resultSet = $preparedStatement->get_result();
         while($row = $resultSet->fetch_assoc()) {
@@ -36,13 +36,11 @@ class MovieRepository {
     }
 
     private function getMovie($row) {
-        $movie = array();
-        $movie['id'] = $row['id'];
-        $movie['title'] = $row['title'];
-        $movie['year'] = $row['year'];
+        $movie = new Movie();
+        $movie->setId($row['id']);
+        $movie->setTitle($row['title']);
+        $movie->setYear($row['year']);
         return $movie;
     }
 
 }
-
-?>

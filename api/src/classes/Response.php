@@ -4,7 +4,7 @@ class Response {
     private $code;
     private $body;
 
-    public function __construct($code, $body = null) {
+    private function __construct($code, $body = null) {
         $this->code = $code;
         if ($body) {
             $this->body = json_encode($body);
