@@ -1,9 +1,9 @@
 <?php
 
 const HTTP_GET = "GET";
-const HTTP_PUT = "GET";
-const HTTP_POST = "GET";
-const HTTP_DELETE = "GET";
+const HTTP_POST = "POST";
+const HTTP_PUT = "PUT";
+const HTTP_DELETE = "DELETE";
 
 function println($variable) {
     print_r($variable);

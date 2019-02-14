@@ -8,9 +8,9 @@ header("Accept: application/json");
 $router = new Router();
 $dataSource = new DataSource();
 
-$router->add(MovieController::ROUTE, function($request) use ($dataSource) {
+$router->add(MovieController::RESOURCE, function ($request) use ($dataSource) {
     $movieController = new MovieController(new MovieRepository($dataSource));
     $movieController->receive($request);
 });
 
-$router->receive(Request::get());
+$router->receive(Request::createFromGlobals());

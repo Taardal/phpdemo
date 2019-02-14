@@ -21,6 +21,10 @@ class Response {
         return new Response(404, "Not Found");
     }
 
+    public static function notAllowed() {
+        return new Response(405, "Not Allowed");
+    }
+
     public static function internalServerError() {
         return new Response(500, "Internal Server Error");
     }

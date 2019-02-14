@@ -17,7 +17,7 @@ class Request {
         }
     }
 
-    public static function get() {
+    public static function createFromGlobals() {
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = $_SERVER['REQUEST_URI'];
         if ($method == HTTP_POST || $method == HTTP_PUT) {

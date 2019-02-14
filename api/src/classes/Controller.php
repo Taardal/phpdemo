@@ -1,26 +1,32 @@
 <?php
 abstract class Controller {
 
-    private $routers;
+    private $router;
 
     public function __construct() {
-        $this->routers = array();
-        $this->registerRoutes();
+        $this->router = $this->getRouter();
     }
 
     public function receive($request) {
-        $router = $this->routers[$request->getMethod()];
-        $router->receive($request);
+        $this->router->receive($request);
     }
-    
-    protected abstract function registerRoutes();
 
-    protected function registerRoute($method, $route, $function) {
-        if (!$this->routers[$method]) {
-            $this->routers[$method] = new Router();
+    protected abstract function getResources();
+
+    private function getRouter() {
+        $router = new Router();
+        foreach ($this->getResources() as $resource => $actions) {
+            $router->add($resource, function ($request) use ($actions) {
+                $response = $this->getResponse($actions, $request);
+                $response->send();
+            });
         }
-        $router = $this->routers[$method];
-        $router->add($route, $function);
+        return $router;
+    }
+
+    protected function getResponse($actions, $request) {
+        $action = $actions[$request->getMethod()];
+        return $action ? $action($request) : Response::notAllowed();
     }
 
 }

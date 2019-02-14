@@ -1,9 +1,9 @@
 <?php
 class MovieController extends Controller {
 
-    public const ROUTE = "movie";
-    private const GET_ALL_ROUTE = "\\/" . self::ROUTE . "(\\/)?$";
-    private const GET_BY_ID_ROUTE = "\\/" . self::ROUTE . "\\/([A-Za-z0-9]+)(\\/)?$";
+    public const RESOURCE = "\\/movie";
+    private const COLLECTION_RESOURCE = self::RESOURCE . "(\\/)?$";
+    private const SPECIFIC_RESOURCE = self::RESOURCE . "\\/([A-Za-z0-9]+)(\\/)?$";
     
     private $movieRepository;
 
@@ -12,25 +12,66 @@ class MovieController extends Controller {
         $this->movieRepository = $movieRepository;
     }
 
-    protected function registerRoutes() {
-        $this->registerRoute(HTTP_GET, self::GET_ALL_ROUTE, function($request) {
-            $this->getAll();
-        });
-        $this->registerRoute(HTTP_GET, self::GET_BY_ID_ROUTE, function($request) {
-            $this->getById($request);
-        });
+    protected function getResources() {
+        return [
+            self::COLLECTION_RESOURCE => [
+                HTTP_GET => function($request) {
+                    return $this->getAll();
+                },
+                HTTP_POST => function($request) {
+                    return $this->create($request);
+                }, 
+                HTTP_PUT => function($request) {
+                    return $this->update($request);
+                },
+                HTTP_DELETE => function($request) {
+                    return $this->delete($request);
+                }
+            ],
+            self::SPECIFIC_RESOURCE => [
+                HTTP_GET => function($request) {
+                    return $this->getById($request);
+                },
+                HTTP_PUT => function($request) {
+                    return $this->updateById($request);
+                },
+                HTTP_DELETE => function($request) {
+                    return $this->deleteById($request);
+                }
+            ]
+        ];
     }
 
     private function getAll() {
         $movies = $this->movieRepository->findAll();
-        Response::ok($movies)->send();    
+        return Response::ok($movies);   
     }
 
     private function getById($request) {
-        $id = $request->getPathParameters()[sizeof($request->getPathParameters()) - 1];
+        $pathParameters = $request->getPathParameters();
+        $id = $pathParameters[sizeof($pathParameters) - 1];
         $movie = $this->movieRepository->findById($id);
-        $response = $movie ? Response::ok($movie) : Response::notFound();
-        $response->send(); 
+        return $movie ? Response::ok($movie) : Response::notFound();
+    }
+
+    private function create($request) {
+        return Response::notAllowed();
+    }
+
+    private function update($request) {
+        return Response::notAllowed();
+    }
+
+    private function updateById($request) {
+        return Response::notAllowed();
+    }
+
+    private function delete($request) {
+        return Response::notAllowed();
+    }
+
+    private function deleteById($request) {
+        return Response::notAllowed();
     }
 
 }

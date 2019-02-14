@@ -1,25 +1,25 @@
 <?php
 class Router {
 
-    private $routes = array();
+    private $routes = [];
 
-    public function add($route, $function) {
-        $this->routes[$route] = $function;
+    public function add($route, $action) {
+        $this->routes[$route] = $action;
     }
 
     public function receive($request) {
-        $route = $this->getRoute($request);
-        if ($route) {
-            $this->routes[$route]($request);
+        $action = $this->getAction($request);
+        if ($action) {
+            $action($request);
         } else {
             Response::notFound()->send();
         }
     }
 
-    public function getRoute($request) {
-        foreach(array_keys($this->routes) as $route) {
+    public function getAction($request) {
+        foreach($this->routes as $route => $action) {
             if (preg_match("/" . $route . "/", $request->getPath())) {
-                return $route;
+                return $action;
             }
         }
         return null;
