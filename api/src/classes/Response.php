@@ -6,13 +6,11 @@ class Response {
 
     private function __construct($code, $body = null) {
         $this->code = $code;
-        if ($body) {
-            $this->body = json_encode($body);
-        }
+        $this->body = $body;
     }
 
     public static function ok($body = null) {
-        return new Response(200, $body);
+        return new Response(200, json_encode($body));
     }
 
     public static function badRequest() {

@@ -1,39 +1,26 @@
 <?php
 abstract class Controller {
 
+    private $routers;
+
+    public function __construct() {
+        $this->routers = array();
+        $this->registerRoutes();
+    }
+
     public function receive($request) {
-        switch ($request->getMethod()) {
-            case "GET":
-                $this->receiveGet($request);
-                break;
-            case "POST":
-                $this->receivePost($request);
-                break;
-            case "PUT":
-                $this->receivePut($request);
-                break;
-            case "DELETE":
-                $this->receiveDelete($request);
-                break;    
-            default:
-                Response::notFound()->send();
+        $router = $this->routers[$request->getMethod()];
+        $router->receive($request);
+    }
+    
+    protected abstract function registerRoutes();
+
+    protected function registerRoute($method, $route, $function) {
+        if (!$this->routers[$method]) {
+            $this->routers[$method] = new Router();
         }
-    }
-
-    protected function receiveGet($request) {
-        Response::notFound()->send();
-    }
-
-    protected function receivePost($request) {
-        Response::notFound()->send();
-    }
-
-    protected function receivePut($request) {
-        Response::notFound()->send();
-    }
-
-    protected function receiveDelete($request) {
-        Response::notFound()->send();
+        $router = $this->routers[$method];
+        $router->add($route, $function);
     }
 
 }

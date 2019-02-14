@@ -2,36 +2,28 @@
 class MovieController extends Controller {
 
     public const ROUTE = "movie";
+    private const GET_ALL_ROUTE = "\\/" . self::ROUTE . "(\\/)?$";
+    private const GET_BY_ID_ROUTE = "\\/" . self::ROUTE . "\\/([A-Za-z0-9]+)(\\/)?$";
     
     private $movieRepository;
 
     public function __construct($movieRepository) {
+        parent::__construct();
         $this->movieRepository = $movieRepository;
     }
 
-    protected function receiveGet($request) {
-        if ($this->isGetAll($request)) {
+    protected function registerRoutes() {
+        $this->registerRoute(HTTP_GET, self::GET_ALL_ROUTE, function($request) {
             $this->getAll();
-        } else if ($this->isGetById($request)) {
+        });
+        $this->registerRoute(HTTP_GET, self::GET_BY_ID_ROUTE, function($request) {
             $this->getById($request);
-        } else {
-            parent::receiveGet($request);
-        }
-    }
-
-    private function isGetAll($request) {
-        $regex = "/\\/" . self::ROUTE . "(\\/)?$/";
-        return preg_match($regex, $request->getPath());
+        });
     }
 
     private function getAll() {
         $movies = $this->movieRepository->findAll();
         Response::ok($movies)->send();    
-    }
-
-    private function isGetById($request) {
-        $regex = "/\\/" . self::ROUTE . "\\/([A-Za-z0-9]+)(\\/)?$/";
-        return preg_match($regex, $request->getPath());
     }
 
     private function getById($request) {

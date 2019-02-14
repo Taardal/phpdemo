@@ -1,18 +1,29 @@
 <?php
 class Request {
 
-    private const PATH_SEPARATOR = "/";
-
     private $method;
+    private $uri;
     private $url;
     private $pathParameters;
     private $body;
 
-    public function __construct() {
-        $this->method = $_SERVER['REQUEST_METHOD'];
-        $this->url = parse_url($_SERVER['REQUEST_URI']);
-        $this->pathParameters = $this->parsePathParameters();
-        $this->body = $this->parseBody();
+    private function __construct($method, $uri, $body = null) {
+        $this->method = $method;
+        $this->uri = $uri;
+        $this->body = $body;
+        if ($this->uri) {
+            $this->url = parse_url($uri);
+            $this->pathParameters = $this->parsePathParameters();
+        }
+    }
+
+    public static function get() {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = $_SERVER['REQUEST_URI'];
+        if ($method == HTTP_POST || $method == HTTP_PUT) {
+            $body = file_get_contents("php://input");
+        }
+        return new Request($method, $uri, $body);
     }
 
     public function getMethod() {
@@ -45,16 +56,6 @@ class Request {
                 $path = substr($path, 0, -1);
             }
             return explode("/", $path);
-        }
-        return array();
-    }
-
-    private function parseBody() {
-        if ($this->method == "POST" || $this->method == "PUT") {
-            $json = file_get_contents("php://input");
-            if ($json != null && strlen($json) > 0) {
-                return json_decode($json);
-            }
         }
         return array();
     }

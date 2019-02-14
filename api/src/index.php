@@ -13,4 +13,4 @@ $router->add(MovieController::ROUTE, function($request) use ($dataSource) {
     $movieController->receive($request);
 });
 
-$router->receive(new Request());
+$router->receive(Request::get());

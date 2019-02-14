@@ -1,5 +1,10 @@
 <?php
 
+const HTTP_GET = "GET";
+const HTTP_PUT = "GET";
+const HTTP_POST = "GET";
+const HTTP_DELETE = "GET";
+
 function println($variable) {
     print_r($variable);
     echo("\n");

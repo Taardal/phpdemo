@@ -1,7 +1,6 @@
 <?php
 class Router {
 
-    private const PATH_SEPARATOR = "/";
     private $routes = array();
 
     public function add($route, $function) {
@@ -9,16 +8,21 @@ class Router {
     }
 
     public function receive($request) {
-        $route = $request->getPathParameters()[0];
-        if ($this->isValidRoute($route)) {
+        $route = $this->getRoute($request);
+        if ($route) {
             $this->routes[$route]($request);
         } else {
             Response::notFound()->send();
         }
     }
 
-    private function isValidRoute($route) {
-        return $route != null && strlen($route) > 0 && array_key_exists($route, $this->routes);
+    public function getRoute($request) {
+        foreach(array_keys($this->routes) as $route) {
+            if (preg_match("/" . $route . "/", $request->getPath())) {
+                return $route;
+            }
+        }
+        return null;
     }
 
 }
