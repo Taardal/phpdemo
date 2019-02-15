@@ -1,10 +1,6 @@
 <?php
-class MovieController extends Controller {
+class MovieController {
 
-    public const RESOURCE = RX_SLASH . "movies";
-    private const COLLECTION_RESOURCE = self::RESOURCE . RX_URL_END;
-    private const SPECIFIC_RESOURCE = self::RESOURCE . RX_SLASH . RX_NUMBERS . RX_URL_END;
-    
     private $movieRepository;
 
     public function __construct($movieRepository) {
@@ -12,72 +8,54 @@ class MovieController extends Controller {
         $this->movieRepository = $movieRepository;
     }
 
-    protected function getResources() {
-        return [
-            self::COLLECTION_RESOURCE => [
-                GET => function($request) {
-                    return $this->getMultiple($request);
-                },
-                POST => function($request) {
-                    return $this->createSingle($request);
-                }
-            ],
-            self::SPECIFIC_RESOURCE => [
-                GET => function($request) {
-                    return $this->getById($request);
-                },
-                PUT => function($request) {
-                    return $this->updateSingle($request);
-                },
-                DELETE => function($request) {
-                    return $this->deleteSingle($request);
-                }
-            ]
-        ];
+    public function getMultiple() {
+        try {
+            $movies = $this->movieRepository->findAll();
+            return Response::ok($movies);
+        } catch (Exception $e) {
+            return Response::internalServerError();
+        }   
     }
 
-    private function getMultiple($request) {
-        $movies = $this->movieRepository->findAll();
-        return Response::ok($movies);   
+    public function getById($id) {
+        try {
+            $movie = $this->movieRepository->findById($id);
+            return $movie ? Response::ok($movie) : Response::notFound();    
+        } catch (Exception $e) {
+            return Response::internalServerError();
+        }
     }
 
-    private function getById($request) {
-        $id = end($request->getPathParameters());
-        $movie = $this->movieRepository->findById($id);
-        return $movie ? Response::ok($movie) : Response::notFound();
-    }
-
-    private function createSingle($request) {
-        $body = $request->getBody();
-        if ($body) {
-            $movie = (array) json_decode($body);
+    public function createSingle($movie) {
+        try {
             $id = $this->movieRepository->insert($movie);
             if ($id) {
                 $location = $request->getPath() . "/$id";
                 return Response::created($location);
+            } else {
+                return Response::badRequest();
             }
+        } catch (Exception $e) {
+            return Response::internalServerError();
         }
-        return Response::badRequest();
     }
 
-    private function updateSingle($request) {
-        $id = end($request->getPathParameters());
-        $body = $request->getBody();
-        if ($body) {
-            $movie = (array) json_decode($body);
+    public function updateSingle($movie, $id) {
+        try {
             $updated = $this->movieRepository->updateById($movie, $id);
-            if ($updated) {
-                return Response::ok();
-            }
+            return $updated ? Response::ok() : Response::badRequest();
+        } catch (Exception $e) {
+            return Response::internalServerError();
         }
-        return Response::badRequest();
     }
 
-    private function deleteSingle($request) {
-        $id = end($request->getPathParameters());
-        $body = $request->getBody();
-        $deleted = $this->movieRepository->deleteById($id);
-        return $deleted ? Response::ok() : Response::badRequest();
+    public function deleteSingle($id) {
+        try {
+            $deleted = $this->movieRepository->deleteById($id);
+            return $deleted ? Response::ok() : Response::badRequest();
+        } catch (Exception $e) {
+            return Response::internalServerError();
+        }
     }
 
 }

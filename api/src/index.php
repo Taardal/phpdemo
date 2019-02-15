@@ -11,7 +11,8 @@ $dataSource = new DataSource();
 $router->addResource(MovieController::RESOURCE, function ($request) use ($dataSource) {
     $movieRepository = new MovieRepository($dataSource);
     $movieController = new MovieController($movieRepository);
-    $movieController->receive($request);
+    $movieControllerFilter = new MovieControllerFilter($movieController);
+    $movieControllerFilter->receive($request);
 });
 
 $router->receive(Request::createFromGlobals());
