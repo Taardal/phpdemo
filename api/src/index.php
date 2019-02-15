@@ -9,8 +9,9 @@ $router = new Router();
 $dataSource = new DataSource();
 
 $router->add(MovieController::RESOURCE, function ($request) use ($dataSource) {
-    $movieController = new MovieController(new MovieRepository($dataSource));
+    $movieRepostory = new MovieRepository($dataSource);
+    $movieController = new MovieController($movieRepository);
     $movieController->receive($request);
 });
-println(Request::createFromGlobals());
+
 $router->receive(Request::createFromGlobals());

@@ -1,8 +1,8 @@
 <?php
-const HTTP_GET = "GET";
-const HTTP_POST = "POST";
-const HTTP_PUT = "PUT";
-const HTTP_DELETE = "DELETE";
+const GET = "GET";
+const POST = "POST";
+const PUT = "PUT";
+const DELETE = "DELETE";
 const RX_SLASH = "\\/";
 const RX_OPTIONAL_SLASH = "(" . RX_SLASH . ")?";
 const RX_URL_END = RX_OPTIONAL_SLASH . "$";

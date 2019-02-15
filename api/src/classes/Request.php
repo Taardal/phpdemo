@@ -5,8 +5,6 @@ class Request {
     private $body;
     private $uri;
     private $url;
-    private $path;
-    private $query;
     private $pathParameters;
     private $queryParameters;
 
@@ -16,8 +14,6 @@ class Request {
         $this->body = $body;
         if ($uri) {
             $this->url = parse_url($uri);
-            $this->path = $this->url['path'];
-            $this->query = $this->url['query'];
             $this->pathParameters = $this->parsePathParameters();
             $this->queryParameters = $this->parseQueryParameters();
         }
@@ -26,9 +22,7 @@ class Request {
     public static function createFromGlobals() {
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = $_SERVER['REQUEST_URI'];
-        if ($method == HTTP_POST || $method == HTTP_PUT) {
-            $body = file_get_contents("php://input");
-        }
+        $body = file_get_contents("php://input");
         return new Request($method, $uri, $body);
     }
 
@@ -49,11 +43,11 @@ class Request {
     }
 
     public function getPath() {
-        return $this->path;
+        return $this->url['path'];
     }
 
     public function getQuery() {
-        return $this->query;
+        return $this->url['query'];
     }
 
     public function getPathParameters() {
