@@ -1,5 +1,5 @@
 <?php
-abstract class ControllerFilter {
+abstract class Controller {
 
     private $router;
 

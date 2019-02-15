@@ -52,11 +52,14 @@ class Response implements JsonSerializable {
     }
 
     public function jsonSerialize() {
-        return [
+        $toBeSerialized =  [
             "code" => $this->code,
-            "message" => $this->text,
-            "data" => $this->data
+            "message" => $this->text
         ];
+        if ($this->data) {
+            $toBeSerialized["data"] = $this->data;
+        }
+        return $toBeSerialized;
     }
 
 }
