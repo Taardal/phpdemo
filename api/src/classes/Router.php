@@ -1,10 +1,10 @@
 <?php
 class Router {
 
-    private $routes = [];
+    private $resources = [];
 
-    public function add($route, $action) {
-        $this->routes[$route] = $action;
+    public function addResource($resource, $action) {
+        $this->resources[$resource] = $action;
     }
 
     public function receive($request) {
@@ -17,8 +17,8 @@ class Router {
     }
 
     private function getAction($request) {
-        foreach($this->routes as $route => $action) {
-            if ($this->matches($route, $request->getPath())) {
+        foreach($this->resources as $resource => $action) {
+            if ($this->matches($resource, $request->getPath())) {
                 return $action;
             }
         }
@@ -26,7 +26,13 @@ class Router {
     }
 
     private function matches($regex, $path) {
-        return preg_match("/" . $regex . "/", $request->getPath());
+        if (!str_begins_with("/", $regex)) {
+            $regex = "/$regex"; 
+        }
+        if (!str_ends_with("/", $regex)) {
+            $regex = "$regex/";
+        }
+        return preg_match($regex, $path);
     }
 
 }

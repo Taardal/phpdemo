@@ -16,7 +16,7 @@ abstract class Controller {
     private function getRouter() {
         $router = new Router();
         foreach ($this->getResources() as $resource => $actions) {
-            $router->add($resource, function ($request) use ($actions) {
+            $router->addResource($resource, function ($request) use ($actions) {
                 $response = $this->getResponse($request, $actions);
                 $response->send();
             });

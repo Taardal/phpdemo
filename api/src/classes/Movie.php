@@ -2,6 +2,7 @@
 class Movie implements JsonSerializable {
 
     private $id;
+    private $imdbId;
     private $title;
     private $year;
 
@@ -30,11 +31,11 @@ class Movie implements JsonSerializable {
     }
 
     public function jsonSerialize() {
-        return array(
+        return [
             'id' => $this->id,
             'title' => $this->title,
             'year' => $this->year,
-        );
+        ];
     }
 
 }

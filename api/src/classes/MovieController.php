@@ -1,9 +1,9 @@
 <?php
 class MovieController extends Controller {
 
-    public const RESOURCE = RX_SLASH . "movie";
+    public const RESOURCE = RX_SLASH . "movies";
     private const COLLECTION_RESOURCE = self::RESOURCE . RX_URL_END;
-    private const SPECIFIC_RESOURCE = self::RESOURCE . RX_SLASH . RX_LETTERS_OR_NUMBERS . RX_URL_END;
+    private const SPECIFIC_RESOURCE = self::RESOURCE . RX_SLASH . RX_NUMBERS . RX_URL_END;
     
     private $movieRepository;
 
@@ -15,63 +15,69 @@ class MovieController extends Controller {
     protected function getResources() {
         return [
             self::COLLECTION_RESOURCE => [
-                HTTP_GET => function($request) {
-                    return $this->getAll();
+                GET => function($request) {
+                    return $this->getMultiple($request);
                 },
-                HTTP_POST => function($request) {
+                POST => function($request) {
                     return $this->createSingle($request);
-                }, 
-                HTTP_PUT => function($request) {
-                    return $this->updateMultiple($request);
-                },
-                HTTP_DELETE => function($request) {
-                    return $this->deleteAll($request);
                 }
             ],
             self::SPECIFIC_RESOURCE => [
-                HTTP_GET => function($request) {
+                GET => function($request) {
                     return $this->getById($request);
                 },
-                HTTP_PUT => function($request) {
-                    return $this->updateById($request);
+                PUT => function($request) {
+                    return $this->updateSingle($request);
                 },
-                HTTP_DELETE => function($request) {
-                    return $this->deleteById($request);
+                DELETE => function($request) {
+                    return $this->deleteSingle($request);
                 }
             ]
         ];
     }
 
-    private function getAll() {
+    private function getMultiple($request) {
         $movies = $this->movieRepository->findAll();
         return Response::ok($movies);   
     }
 
     private function getById($request) {
-        $pathParameters = $request->getPathParameters();
-        $id = $pathParameters[sizeof($pathParameters) - 1];
+        $id = end($request->getPathParameters());
         $movie = $this->movieRepository->findById($id);
         return $movie ? Response::ok($movie) : Response::notFound();
     }
 
     private function createSingle($request) {
-        return Response::notAllowed();
+        $body = $request->getBody();
+        if ($body) {
+            $movie = (array) json_decode($body);
+            $id = $this->movieRepository->insert($movie);
+            if ($id) {
+                $location = $request->getPath() . "/$id";
+                return Response::created($location);
+            }
+        }
+        return Response::badRequest();
     }
 
-    private function updateMultiple($request) {
-        return Response::notAllowed();
+    private function updateSingle($request) {
+        $id = end($request->getPathParameters());
+        $body = $request->getBody();
+        if ($body) {
+            $movie = (array) json_decode($body);
+            $updated = $this->movieRepository->updateById($movie, $id);
+            if ($updated) {
+                return Response::ok();
+            }
+        }
+        return Response::badRequest();
     }
 
-    private function updateById($request) {
-        return Response::notAllowed();
-    }
-
-    private function deleteAll($request) {
-        return Response::notAllowed();
-    }
-
-    private function deleteById($request) {
-        return Response::notAllowed();
+    private function deleteSingle($request) {
+        $id = end($request->getPathParameters());
+        $body = $request->getBody();
+        $deleted = $this->movieRepository->deleteById($id);
+        return $deleted ? Response::ok() : Response::badRequest();
     }
 
 }

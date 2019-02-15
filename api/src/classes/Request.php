@@ -1,6 +1,7 @@
 <?php
 class Request {
 
+    private $host;
     private $method;
     private $body;
     private $uri;
@@ -8,22 +9,26 @@ class Request {
     private $pathParameters;
     private $queryParameters;
 
-    private function __construct($method, $uri, $body = null) {
-        $this->method = $method;
-        $this->uri = $uri;
-        $this->body = $body;
-        if ($uri) {
-            $this->url = parse_url($uri);
+    private function __construct() {
+        $this->host = $_SERVER['HTTP_HOST'];
+        $this->method = $_SERVER['REQUEST_METHOD'];
+        $this->uri = $_SERVER['REQUEST_URI'];
+        if ($this->uri) {
+            $this->url = parse_url($this->uri);
             $this->pathParameters = $this->parsePathParameters();
             $this->queryParameters = $this->parseQueryParameters();
+        }
+        if ($this->method == POST || $this->method == PUT) {
+            $this->body = file_get_contents("php://input");
         }
     }
 
     public static function createFromGlobals() {
-        $method = $_SERVER['REQUEST_METHOD'];
-        $uri = $_SERVER['REQUEST_URI'];
-        $body = file_get_contents("php://input");
-        return new Request($method, $uri, $body);
+        return new Request();
+    }
+
+    public function getHost() {
+        return $this->host;
     }
 
     public function getMethod() {

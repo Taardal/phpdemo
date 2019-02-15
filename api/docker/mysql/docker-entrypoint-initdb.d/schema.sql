@@ -3,11 +3,12 @@ USE svitts;
 
 DROP TABLE IF EXISTS `movie`;
 CREATE TABLE `movie` (
-  `id` VARCHAR(255) NOT NULL UNIQUE,
+  `id` INT NOT NULL UNIQUE AUTO_INCREMENT,
+  `imdbId` VARCHAR(255) NOT NULL UNIQUE,
   `title` VARCHAR(255) NOT NULL,
-  `year` INT NOT NULL,
+  `year` INT,
   PRIMARY KEY(`id`)
 );
 
-INSERT INTO movie (`id`, `title`, `year`) VALUES ('tt6105098', 'The Lion King', 2019);
-INSERT INTO movie (`id`, `title`, `year`) VALUES ('tt4532826', 'Robin Hood', 2018);
+INSERT INTO movie (`imdbId`, `title`, `year`) VALUES ('tt6105098', 'The Lion King', 2019);
+INSERT INTO movie (`imdbId`, `title`, `year`) VALUES ('tt4532826', 'Robin Hood', 2018);

@@ -8,8 +8,8 @@ header("Accept: application/json");
 $router = new Router();
 $dataSource = new DataSource();
 
-$router->add(MovieController::RESOURCE, function ($request) use ($dataSource) {
-    $movieRepostory = new MovieRepository($dataSource);
+$router->addResource(MovieController::RESOURCE, function ($request) use ($dataSource) {
+    $movieRepository = new MovieRepository($dataSource);
     $movieController = new MovieController($movieRepository);
     $movieController->receive($request);
 });

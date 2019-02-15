@@ -6,6 +6,8 @@ const DELETE = "DELETE";
 const RX_SLASH = "\\/";
 const RX_OPTIONAL_SLASH = "(" . RX_SLASH . ")?";
 const RX_URL_END = RX_OPTIONAL_SLASH . "$";
+const RX_LETTERS = "([A-Za-z]+)";
+const RX_NUMBERS = "([0-9]+)";
 const RX_LETTERS_OR_NUMBERS = "([A-Za-z0-9]+)";
 
 function println($variable) {

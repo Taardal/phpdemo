@@ -1,16 +1,26 @@
 <?php
-class Response {
+class Response implements JsonSerializable {
 
     private $code;
-    private $body;
+    private $text;
+    private $data;
+    private $headers;
 
-    private function __construct($code, $body = null) {
+    private function __construct($code, $text, $data = null) {
         $this->code = $code;
-        $this->body = $body;
+        $this->text = $text;
+        $this->data = $data;
+        $this->headers = [];
     }
 
-    public static function ok($body = null) {
-        return new Response(200, json_encode($body));
+    public static function ok($data = null) {
+        return new Response(200, "OK", $data);
+    }
+
+    public static function created($location) {
+        $response = new Response(201, "Created");
+        $response->addHeader("Location: $location");
+        return $response;
     }
 
     public static function badRequest() {
@@ -29,9 +39,24 @@ class Response {
         return new Response(500, "Internal Server Error");
     }
 
+    public function addHeader($header) {
+        $this->headers[] = $header;
+    }
+
     public function send() {
         http_response_code($this->code);
-        die($this->body);
+        foreach ($this->headers as $header) {
+            header($header);
+        }
+        die(json_encode($this));
+    }
+
+    public function jsonSerialize() {
+        return [
+            "code" => $this->code,
+            "message" => $this->text,
+            "data" => $this->data
+        ];
     }
 
 }
