@@ -12,5 +12,5 @@ $router->add(MovieController::RESOURCE, function ($request) use ($dataSource) {
     $movieController = new MovieController(new MovieRepository($dataSource));
     $movieController->receive($request);
 });
-
+println(Request::createFromGlobals());
 $router->receive(Request::createFromGlobals());

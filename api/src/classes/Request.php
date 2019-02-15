@@ -2,18 +2,24 @@
 class Request {
 
     private $method;
+    private $body;
     private $uri;
     private $url;
+    private $path;
+    private $query;
     private $pathParameters;
-    private $body;
+    private $queryParameters;
 
     private function __construct($method, $uri, $body = null) {
         $this->method = $method;
         $this->uri = $uri;
         $this->body = $body;
-        if ($this->uri) {
+        if ($uri) {
             $this->url = parse_url($uri);
+            $this->path = $this->url['path'];
+            $this->query = $this->url['query'];
             $this->pathParameters = $this->parsePathParameters();
+            $this->queryParameters = $this->parseQueryParameters();
         }
     }
 
@@ -30,23 +36,36 @@ class Request {
         return $this->method;
     }
 
+    public function getBody() {
+        return $this->body;
+    }
+
+    public function getUri() {
+        return $this->uri;
+    }
+
+    public function getUrl() {
+        return $this->url;
+    }
+
     public function getPath() {
-        return $this->url['path'];
+        return $this->path;
+    }
+
+    public function getQuery() {
+        return $this->query;
     }
 
     public function getPathParameters() {
         return $this->pathParameters;
     }
 
-    public function getQuery() {
-        return $this->url['query'];
-    }
-
-    public function getBody() {
-        return $this->body;
+    public function getQueryParameters() {
+        return $this->queryParameters;
     }
 
     private function parsePathParameters() {
+        $pathParameters = [];
         $path = $this->getPath();
         if ($path) {
             if (str_begins_with("/", $path)) {
@@ -55,9 +74,22 @@ class Request {
             if (str_ends_with("/", $path)) {
                 $path = substr($path, 0, -1);
             }
-            return explode("/", $path);
+            $pathParameters = explode("/", $path);
         }
-        return array();
+        return $pathParameters;
+    }
+
+    private function parseQueryParameters() {
+        $queryParameters = [];
+        $query = $this->getQuery();
+        if ($query) {
+            $pairs = explode("&", $query);
+            foreach ($pairs as $pair) {
+                $keyValue = explode("=", $pair);
+                $queryParameters[$keyValue[0]] = $keyValue[1];
+            }
+        }
+        return $queryParameters;
     }
 
 }

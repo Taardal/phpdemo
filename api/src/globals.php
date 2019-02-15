@@ -1,9 +1,12 @@
 <?php
-
 const HTTP_GET = "GET";
 const HTTP_POST = "POST";
 const HTTP_PUT = "PUT";
 const HTTP_DELETE = "DELETE";
+const RX_SLASH = "\\/";
+const RX_OPTIONAL_SLASH = "(" . RX_SLASH . ")?";
+const RX_URL_END = RX_OPTIONAL_SLASH . "$";
+const RX_LETTERS_OR_NUMBERS = "([A-Za-z0-9]+)";
 
 function println($variable) {
     print_r($variable);

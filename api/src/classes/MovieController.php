@@ -1,9 +1,9 @@
 <?php
 class MovieController extends Controller {
 
-    public const RESOURCE = "\\/movie";
-    private const COLLECTION_RESOURCE = self::RESOURCE . "(\\/)?$";
-    private const SPECIFIC_RESOURCE = self::RESOURCE . "\\/([A-Za-z0-9]+)(\\/)?$";
+    public const RESOURCE = RX_SLASH . "movie";
+    private const COLLECTION_RESOURCE = self::RESOURCE . RX_URL_END;
+    private const SPECIFIC_RESOURCE = self::RESOURCE . RX_SLASH . RX_LETTERS_OR_NUMBERS . RX_URL_END;
     
     private $movieRepository;
 
@@ -19,13 +19,13 @@ class MovieController extends Controller {
                     return $this->getAll();
                 },
                 HTTP_POST => function($request) {
-                    return $this->create($request);
+                    return $this->createSingle($request);
                 }, 
                 HTTP_PUT => function($request) {
-                    return $this->update($request);
+                    return $this->updateMultiple($request);
                 },
                 HTTP_DELETE => function($request) {
-                    return $this->delete($request);
+                    return $this->deleteAll($request);
                 }
             ],
             self::SPECIFIC_RESOURCE => [
@@ -54,11 +54,11 @@ class MovieController extends Controller {
         return $movie ? Response::ok($movie) : Response::notFound();
     }
 
-    private function create($request) {
+    private function createSingle($request) {
         return Response::notAllowed();
     }
 
-    private function update($request) {
+    private function updateMultiple($request) {
         return Response::notAllowed();
     }
 
@@ -66,7 +66,7 @@ class MovieController extends Controller {
         return Response::notAllowed();
     }
 
-    private function delete($request) {
+    private function deleteAll($request) {
         return Response::notAllowed();
     }
 

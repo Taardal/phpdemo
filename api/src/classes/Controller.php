@@ -17,14 +17,14 @@ abstract class Controller {
         $router = new Router();
         foreach ($this->getResources() as $resource => $actions) {
             $router->add($resource, function ($request) use ($actions) {
-                $response = $this->getResponse($actions, $request);
+                $response = $this->getResponse($request, $actions);
                 $response->send();
             });
         }
         return $router;
     }
 
-    protected function getResponse($actions, $request) {
+    protected function getResponse($request, $actions) {
         $action = $actions[$request->getMethod()];
         return $action ? $action($request) : Response::notAllowed();
     }

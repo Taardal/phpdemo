@@ -16,13 +16,17 @@ class Router {
         }
     }
 
-    public function getAction($request) {
+    private function getAction($request) {
         foreach($this->routes as $route => $action) {
-            if (preg_match("/" . $route . "/", $request->getPath())) {
+            if ($this->matches($route, $request->getPath())) {
                 return $action;
             }
         }
         return null;
+    }
+
+    private function matches($regex, $path) {
+        return preg_match("/" . $regex . "/", $request->getPath());
     }
 
 }
