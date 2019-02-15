@@ -11,9 +11,9 @@ class MovieRepository {
         $connection = $this->dataSource->getConnection();
         $preparedStatement = $connection->prepare("SELECT * FROM `movie`");
         $preparedStatement->execute();
-        $results = $this->getResults($preparedStatement);
+        $movies = $this->getMovies($preparedStatement);
         $preparedStatement->close();
-        return $results;
+        return $movies;
     }
 
     public function findById($id) {
@@ -21,15 +21,15 @@ class MovieRepository {
         $preparedStatement = $connection->prepare("SELECT * FROM `movie` WHERE `id` = ?");
         $preparedStatement->bind_param("s", $id);
         $preparedStatement->execute();
-        $results = $this->getResults($preparedStatement);
+        $movies = $this->getMovies($preparedStatement);
         $preparedStatement->close();
-        return $results[0];
+        return $movies[0];
     }
 
     public function insert($movie) {
         $connection = $this->dataSource->getConnection();
         $preparedStatement = $connection->prepare("INSERT INTO `movie` (`imdbId`, `title`, `year`) VALUES (?, ?, ?)");
-        $preparedStatement->bind_param("ssi", $movie['imdbId'], $movie['title'], $movie['year']);
+        $preparedStatement->bind_param("ssi", $movie->getImdbId(), $movie->getTitle(), $movie->getYear());
         $preparedStatement->execute();
         $id = $preparedStatement->insert_id;
         $preparedStatement->close();
@@ -39,7 +39,7 @@ class MovieRepository {
     public function updateById($movie, $id) {
         $connection = $this->dataSource->getConnection();
         $preparedStatement = $connection->prepare("UPDATE `movie` SET `imdbId` = ?, `title` = ?, `year` = ? WHERE `id` = ?");
-        $preparedStatement->bind_param("ssii", $movie['imdbId'], $movie['title'], $movie['year'], $id);
+        $preparedStatement->bind_param("ssii", $movie->getImdbId(), $movie->getTitle(), $movie->getYear(), $id);
         $preparedStatement->execute();
         $affectedRows = $preparedStatement->affected_rows;
         $preparedStatement->close();
@@ -56,22 +56,14 @@ class MovieRepository {
         return $affectedRows > 0;
     }
 
-    private function getResults($preparedStatement) {
-        $results = [];
+    private function getMovies($preparedStatement) {
+        $movies = [];
         $resultSet = $preparedStatement->get_result();
         while($row = $resultSet->fetch_assoc()) {
-            $results[] = $this->getMovie($row);
+            $movies[] = Movie::jsonDeserialize(json_encode($row));
         };
         $resultSet->close();
-        return $results;
-    }
-
-    private function getMovie($row) {
-        $movie = [];
-        $movie['id'] = $row['id'];
-        $movie['title'] = $row['title'];
-        $movie['year'] = $row['year'];
-        return $movie;
+        return $movies;
     }
 
 }

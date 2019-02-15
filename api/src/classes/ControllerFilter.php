@@ -17,16 +17,12 @@ abstract class ControllerFilter {
         $router = new Router();
         foreach ($this->getResources() as $resource => $actions) {
             $router->addResource($resource, function ($request) use ($actions) {
-                $response = $this->getResponse($request, $actions);
+                $action = $actions[$request->getMethod()];
+                $response = $action ? $action($request) : Response::notAllowed();
                 $response->send();
             });
         }
         return $router;
-    }
-
-    protected function getResponse($request, $actions) {
-        $action = $actions[$request->getMethod()];
-        return $action ? $action($request) : Response::notAllowed();
     }
 
 }

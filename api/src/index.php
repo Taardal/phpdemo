@@ -8,11 +8,15 @@ header("Accept: application/json");
 $router = new Router();
 $dataSource = new DataSource();
 
-$router->addResource(MovieController::RESOURCE, function ($request) use ($dataSource) {
+$router->addResource(MovieControllerFilter::RESOURCE, function ($request) use ($dataSource) {
     $movieRepository = new MovieRepository($dataSource);
     $movieController = new MovieController($movieRepository);
     $movieControllerFilter = new MovieControllerFilter($movieController);
     $movieControllerFilter->receive($request);
 });
 
-$router->receive(Request::createFromGlobals());
+try {
+    $router->receive(Request::createFromGlobals());
+} catch (Throwable $e) {
+    return Response::internalServerError()->send();
+}
