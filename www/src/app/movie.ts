@@ -1,3 +1,11 @@
+import { Genre } from './genre';
+
 export class Movie {
-  constructor(id: number, title: string) {}
+
+  id: number;
+  imdbId: string;
+  title: string;
+  year: number;
+  genres: Genre[];
+
 }

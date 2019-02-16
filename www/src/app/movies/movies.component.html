@@ -1,8 +1,10 @@
-<p>
-  movies works!
-</p>
-<ul>
+<ul class="movies">
   <li *ngFor="let movie of movies">
-    {{ movie.title }}
+    <a routerLink="/detail/{{ movie.id }}">
+      <div class="text">
+        <span class="badge">{{ movie.id }} </span>{{ movie.title }}
+      </div>
+    </a>
+    <button class="delete" title="delete movie" (click)="delete(movie)">DELETE</button>
   </li>
 </ul>
