@@ -14,8 +14,4 @@ $router->addResource(MovieController::RESOURCE, function ($request) use ($dataSo
     $movieController->receive($request);
 });
 
-try {
-    $router->receive(Request::createFromGlobals());
-} catch (Throwable $e) {
-    return Response::internalServerError()->send();
-}
+$router->receive(Request::createFromGlobals());

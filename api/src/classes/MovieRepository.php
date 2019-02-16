@@ -27,23 +27,48 @@ class MovieRepository {
     }
 
     public function insert($movie) {
+        $sql = "INSERT INTO `movie` (`imdbId`, `title`, `year`) VALUES (?, ?, ?)";
+        $sqlParameters = [
+            $movie->getImdbId(), 
+            $movie->getTitle(), 
+            $movie->getYear()
+        ];        
         $connection = $this->dataSource->getConnection();
-        $preparedStatement = $connection->prepare("INSERT INTO `movie` (`imdbId`, `title`, `year`) VALUES (?, ?, ?)");
-        $preparedStatement->bind_param("ssi", $movie->getImdbId(), $movie->getTitle(), $movie->getYear());
+        $preparedStatement = $connection->prepare($sql);
+        $preparedStatement->bind_param("ssi", ...$sqlParameters);
         $preparedStatement->execute();
         $id = $preparedStatement->insert_id;
         $preparedStatement->close();
-        return $id != 0 ? $id : null;
+        return $id;
     }
 
-    public function updateById($movie, $id) {
+    public function update($movies) {
+        $sql = "UPDATE `movie` SET `imdbId` = ?, `title` = ?, `year` = ? WHERE `id` = ?";
         $connection = $this->dataSource->getConnection();
-        $preparedStatement = $connection->prepare("UPDATE `movie` SET `imdbId` = ?, `title` = ?, `year` = ? WHERE `id` = ?");
-        $preparedStatement->bind_param("ssii", $movie->getImdbId(), $movie->getTitle(), $movie->getYear(), $id);
+        $preparedStatement = $connection->prepare($sql);
+        $preparedStatement->bind_param("ssii", $imdbId, $title, $year, $id);
+        $affectedRows = 0;
+        foreach ($movies as $movie) {
+            list($imdbId, $title, $year, $id) = [
+                $movie->getImdbId(), 
+                $movie->getTitle(), 
+                $movie->getYear(),
+                $movie->getId()
+            ];
+            $preparedStatement->execute();
+            $affectedRows += $preparedStatement->affected_rows;
+        }
+        $preparedStatement->close();
+        return $affectedRows;
+    }
+
+    public function deleteAll() {
+        $connection = $this->dataSource->getConnection();
+        $preparedStatement = $connection->prepare("DELETE FROM `movie`");
         $preparedStatement->execute();
         $affectedRows = $preparedStatement->affected_rows;
         $preparedStatement->close();
-        return $affectedRows > 0;
+        return $affectedRows;
     }
 
     public function deleteById($id) {
@@ -53,14 +78,14 @@ class MovieRepository {
         $preparedStatement->execute();
         $affectedRows = $preparedStatement->affected_rows;
         $preparedStatement->close();
-        return $affectedRows > 0;
+        return $affectedRows;
     }
 
     private function getMovies($preparedStatement) {
         $movies = [];
         $resultSet = $preparedStatement->get_result();
         while($row = $resultSet->fetch_assoc()) {
-            $movies[] = Movie::jsonDeserialize(json_encode($row));
+            $movies[] = Movie::fromAssociativeArray($row);
         };
         $resultSet->close();
         return $movies;

@@ -11,19 +11,33 @@ class Movie implements JsonSerializable {
     private $title;
     private $year;
 
-    public static function jsonDeserialize($json) {
-        $decoded = (array) json_decode($json);
+    public static function fromAssociativeArray($item) {
         $movie = new Movie();
-        $movie->setId($decoded[self::ID]);
-        $movie->setImdbId($decoded[self::IMDB_ID]);
-        $movie->setTitle($decoded[self::TITLE]);
-        $movie->setYear($decoded[self::YEAR]);
+        $movie->setId($item[self::ID]);
+        $movie->setImdbId($item[self::IMDB_ID]);
+        $movie->setTitle($item[self::TITLE]);
+        $movie->setYear($item[self::YEAR]);
         return $movie;
+    }
+
+    public static function jsonDeserializeMultiple($json) {
+        $items = (array) json_decode($json);
+        $movies = [];
+        foreach ($items as $item) {
+            $movies[] = self::fromAssociativeArray((array) $item);
+        }
+        return $movies;
+    }
+
+    public static function jsonDeserialize($json) {
+        $item = (array) json_decode($json);
+        return self::fromAssociativeArray($item);
     }
 
     public function jsonSerialize() {
         return [
             self::ID => $this->id,
+            self::IMDB_ID => $this->imdbId,
             self::TITLE => $this->title,
             self::YEAR => $this->year,
         ];

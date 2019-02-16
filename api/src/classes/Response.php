@@ -56,7 +56,7 @@ class Response implements JsonSerializable {
             "code" => $this->code,
             "message" => $this->text
         ];
-        if ($this->data) {
+        if ($this->data !== null) {
             $toBeSerialized["data"] = $this->data;
         }
         return $toBeSerialized;
