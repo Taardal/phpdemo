@@ -14,4 +14,10 @@ $router->addResource(MovieController::RESOURCE, function ($request) use ($dataSo
     $movieController->receive($request);
 });
 
+$router->addResource(GenreController::RESOURCE, function ($request) use ($dataSource) {
+    $genreRepository = new GenreRepository($dataSource);
+    $genreController = new GenreController($genreRepository);
+    $genreController->receive($request);
+});
+
 $router->receive(Request::createFromGlobals());
