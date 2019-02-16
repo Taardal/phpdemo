@@ -31,6 +31,7 @@ INSERT INTO `genre` (`name`) VALUES ('Action');
 INSERT INTO `genre` (`name`) VALUES ('Adult');
 INSERT INTO `genre` (`name`) VALUES ('Adventure');
 INSERT INTO `genre` (`name`) VALUES ('Animation');
+INSERT INTO `genre` (`name`) VALUES ('Biography');
 INSERT INTO `genre` (`name`) VALUES ('Children');
 INSERT INTO `genre` (`name`) VALUES ('Comedy');
 INSERT INTO `genre` (`name`) VALUES ('Crime');
@@ -49,29 +50,72 @@ INSERT INTO `genre` (`name`) VALUES ('War');
 INSERT INTO `genre` (`name`) VALUES ('Western');
 
 INSERT INTO `movie` (`imdb_id`, `title`, `year`) VALUES ('tt6105098', 'The Lion King', 2019);
-INSERT INTO `movie` (`imdb_id`, `title`, `year`) VALUES ('tt4532826', 'Robin Hood', 2018);
-
 INSERT INTO movie_genre (`movie_id_fk`, `genre_id_fk`) VALUES (
-  (SELECT `id` FROM `movie` WHERE `title` = 'The Lion King'), 
+  (SELECT `id` FROM `movie` WHERE `imdb_id` = 'tt6105098'), 
   (SELECT `id` FROM `genre` WHERE `name` = 'Adventure')
 );
 INSERT INTO movie_genre (`movie_id_fk`, `genre_id_fk`) VALUES (
-  (SELECT `id` FROM `movie` WHERE `title` = 'The Lion King'), 
+  (SELECT `id` FROM `movie` WHERE `imdb_id` = 'tt6105098'), 
   (SELECT `id` FROM `genre` WHERE `name` = 'Animation')
 );
 INSERT INTO movie_genre (`movie_id_fk`, `genre_id_fk`) VALUES (
-  (SELECT `id` FROM `movie` WHERE `title` = 'The Lion King'), 
+  (SELECT `id` FROM `movie` WHERE `imdb_id` = 'tt6105098'), 
   (SELECT `id` FROM `genre` WHERE `name` = 'Drama')
 );
+
+INSERT INTO `movie` (`imdb_id`, `title`, `year`) VALUES ('tt4532826', 'Robin Hood', 2018);
 INSERT INTO movie_genre (`movie_id_fk`, `genre_id_fk`) VALUES (
-  (SELECT `id` FROM `movie` WHERE `title` = 'Robin Hood'), 
+  (SELECT `id` FROM `movie` WHERE `imdb_id` = 'tt4532826'), 
   (SELECT `id` FROM `genre` WHERE `name` = 'Action')
 );
 INSERT INTO movie_genre (`movie_id_fk`, `genre_id_fk`) VALUES (
-  (SELECT `id` FROM `movie` WHERE `title` = 'Robin Hood'), 
+  (SELECT `id` FROM `movie` WHERE `imdb_id` = 'tt4532826'), 
   (SELECT `id` FROM `genre` WHERE `name` = 'Adventure')
 );
 INSERT INTO movie_genre (`movie_id_fk`, `genre_id_fk`) VALUES (
-  (SELECT `id` FROM `movie` WHERE `title` = 'Robin Hood'), 
+  (SELECT `id` FROM `movie` WHERE `imdb_id` = 'tt4532826'), 
   (SELECT `id` FROM `genre` WHERE `name` = 'Thriller')
 );
+
+INSERT INTO `movie` (`imdb_id`, `title`, `year`) VALUES ('tt0441773', 'Kung Fu Panda', 2008);
+INSERT INTO movie_genre (`movie_id_fk`, `genre_id_fk`) VALUES (
+  (SELECT `id` FROM `movie` WHERE `imdb_id` = 'tt0441773'), 
+  (SELECT `id` FROM `genre` WHERE `name` = 'Action')
+);
+INSERT INTO movie_genre (`movie_id_fk`, `genre_id_fk`) VALUES (
+  (SELECT `id` FROM `movie` WHERE `imdb_id` = 'tt0441773'), 
+  (SELECT `id` FROM `genre` WHERE `name` = 'Adventure')
+);
+INSERT INTO movie_genre (`movie_id_fk`, `genre_id_fk`) VALUES (
+  (SELECT `id` FROM `movie` WHERE `imdb_id` = 'tt0441773'), 
+  (SELECT `id` FROM `genre` WHERE `name` = 'Animation')
+);
+
+INSERT INTO `movie` (`imdb_id`, `title`, `year`) VALUES ('tt0437086', 'Alita: Battle Angel', 2019);
+INSERT INTO movie_genre (`movie_id_fk`, `genre_id_fk`) VALUES (
+  (SELECT `id` FROM `movie` WHERE `imdb_id` = 'tt0437086'), 
+  (SELECT `id` FROM `genre` WHERE `name` = 'Action')
+);
+INSERT INTO movie_genre (`movie_id_fk`, `genre_id_fk`) VALUES (
+  (SELECT `id` FROM `movie` WHERE `imdb_id` = 'tt0437086'), 
+  (SELECT `id` FROM `genre` WHERE `name` = 'Adventure')
+);
+INSERT INTO movie_genre (`movie_id_fk`, `genre_id_fk`) VALUES (
+  (SELECT `id` FROM `movie` WHERE `imdb_id` = 'tt0437086'), 
+  (SELECT `id` FROM `genre` WHERE `name` = 'Romance')
+);
+
+INSERT INTO `movie` (`imdb_id`, `title`, `year`) VALUES ('tt6966692', 'Green Book', 2018);
+INSERT INTO movie_genre (`movie_id_fk`, `genre_id_fk`) VALUES (
+  (SELECT `id` FROM `movie` WHERE `imdb_id` = 'tt6966692'), 
+  (SELECT `id` FROM `genre` WHERE `name` = 'Biography')
+);
+INSERT INTO movie_genre (`movie_id_fk`, `genre_id_fk`) VALUES (
+  (SELECT `id` FROM `movie` WHERE `imdb_id` = 'tt6966692'), 
+  (SELECT `id` FROM `genre` WHERE `name` = 'Comedy')
+);
+INSERT INTO movie_genre (`movie_id_fk`, `genre_id_fk`) VALUES (
+  (SELECT `id` FROM `movie` WHERE `imdb_id` = 'tt6966692'), 
+  (SELECT `id` FROM `genre` WHERE `name` = 'Drama')
+);
+

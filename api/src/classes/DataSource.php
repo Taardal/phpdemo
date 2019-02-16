@@ -21,10 +21,6 @@ class DataSource {
     }
     
     private function createConnection() {
-        $connection = new mysqli(self::$hostname, self::$username, self::$password, self::$database);
-        if ($connection->connect_error) {
-            die("Connection failed: " . $connection->connect_error);
-        }
-        return $connection;
+        return new mysqli(self::$hostname, self::$username, self::$password, self::$database);
     }
 }
