@@ -1,10 +1,10 @@
 <?php
 class Router {
 
-    private $resources = [];
+    private $actions = [];
 
     public function addResource($resource, $action) {
-        $this->resources[$resource] = $action;
+        $this->actions[$resource] = $action;
     }
 
     public function receive($request) {
@@ -17,7 +17,7 @@ class Router {
     }
 
     private function getAction($request) {
-        foreach($this->resources as $resource => $action) {
+        foreach($this->actions as $resource => $action) {
             if ($this->matches($resource, $request->getPath())) {
                 return $action;
             }

@@ -19,4 +19,9 @@ $router->addResource(GenreController::RESOURCE, function ($request) use ($dataSo
     $genreController->receive($request);
 });
 
-$router->receive(Request::createFromGlobals());
+try {
+    $router->receive(Request::createFromGlobals());
+} catch (Throwable $e) {
+    error_log($e);
+    Response::internalServerError()->send();
+}

@@ -43,7 +43,7 @@ class MovieService {
     }
 
     public function updateById($movie, $id) {
-        if ($movie->getId() != $id) {
+        if (!$movie->getId() || $movie->getId() != $id) {
             $movie->setId($id);
         }
         $rowsAffected = $this->update([$movie]);

@@ -1,31 +1,17 @@
 <?php
 class Movie implements JsonSerializable {
 
-    private const ID = "id";
-    private const IMDB_ID = "imdbId";
-    private const TITLE = "title";
-    private const YEAR = "year";
-    private const GENRES = "genres";
+    public const ID = "id";
+    public const IMDB_ID = "imdbId";
+    public const TITLE = "title";
+    public const YEAR = "year";
+    public const GENRES = "genres";
 
     private $id;
     private $imdbId;
     private $title;
     private $year;
     private $genres;
-
-    public static function jsonDeserializeMultiple($json) {
-        $items = (array) json_decode($json);
-        $movies = [];
-        foreach ($items as $item) {
-            $movies[] = self::fromAssociativeArray((array) $item);
-        }
-        return $movies;
-    }
-
-    public static function jsonDeserialize($json) {
-        $item = (array) json_decode($json);
-        return self::fromAssociativeArray($item);
-    }
 
     public function jsonSerialize() {
         return [
@@ -75,21 +61,6 @@ class Movie implements JsonSerializable {
 
     public function setGenres($genres) {
         $this->genres = $genres;
-    }
-
-    private static function fromAssociativeArray($associativeArray) {
-        $movie = new Movie();
-        $movie->setId($associativeArray[self::ID]);
-        $movie->setImdbId($associativeArray[self::IMDB_ID]);
-        $movie->setTitle($associativeArray[self::TITLE]);
-        $movie->setYear($associativeArray[self::YEAR]);
-        $movie->setGenres(self::parseGenres($associativeArray));
-        return $movie;
-    }
-
-    private static function parseGenres($associativeArray) {
-        $genresJson = json_encode($associativeArray[self::GENRES]);
-        return (array) Genre::jsonDeserializeMultiple($genresJson);
     }
 
 }

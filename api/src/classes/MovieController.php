@@ -6,10 +6,12 @@ class MovieController extends Controller {
     private const SPECIFIC_RESOURCE = self::RESOURCE . RX_SLASH . RX_NUMBERS . RX_URL_END;
     
     private $movieService;
+    private $movieDeserializer;
 
     public function __construct($movieService) {
         parent::__construct();
         $this->movieService = $movieService;
+        $this->movieDeserializer = new MovieDeserializer();
     }
 
     protected function getResources() {
@@ -54,7 +56,7 @@ class MovieController extends Controller {
     }
     
     private function insertSingle($request) {
-        $movie = Movie::jsonDeserialize($request->getBody());
+        $movie = $this->movieDeserializer->deserializeJson($request->getBody());
         $id = $this->movieService->create($movie);
         if ($id) {
             $location = $request->getPath() . "/$id";
@@ -65,14 +67,14 @@ class MovieController extends Controller {
     }
 
     private function updateMultiple($request) {
-        $movies = Movie::jsonDeserializeMultiple($request->getBody());
+        $movies = $this->movieDeserializer->deserializeJsonArray($request->getBody());
         $updated = $this->movieService->update($movies);
         return $updated ? Response::ok() : Response::badRequest();
     }
 
     private function updateSingle($request) {
         $id = end($request->getPathParameters());
-        $movie = Movie::jsonDeserialize($request->getBody());
+        $movie = $this->movieDeserializer->deserializeJson($request->getBody());
         $updated = $this->movieService->updateById($movie, $id);
         return $updated ? Response::ok() : Response::badRequest();
     }
