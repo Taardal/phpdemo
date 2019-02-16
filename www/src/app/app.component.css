@@ -1,29 +1,26 @@
-h1 {
-  font-size: 1.2em;
-  color: #999;
-  margin-bottom: 0;
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
 }
-h2 {
-  font-size: 2em;
-  margin-top: 0;
-  padding-top: 0;
+li {
+  float: left;
 }
-nav a {
-  padding: 5px 10px;
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
   text-decoration: none;
-  margin-top: 10px;
-  display: inline-block;
-  background-color: #eee;
-  border-radius: 4px;
 }
-nav a:visited,
-a:link {
-  color: #607d8b;
+li a:hover:not(.brand) {
+  background-color: #111;
 }
-nav a:hover {
-  color: #039be5;
-  background-color: #cfd8dc;
+.content {
+  margin: 1em;
 }
-nav a.active {
-  color: #039be5;
+.brand {
+  background-color: #4caf50;
 }

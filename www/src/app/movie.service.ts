@@ -56,15 +56,6 @@ export class MovieService {
     );
   }
 
-  searchMovies(searchTerm: string): Observable<Movie[]> {
-    return this.httpClient
-      .get<Movie[]>(`${MOVIES_URL}?q=${searchTerm}`, HTTP_OPTIONS)
-      .pipe(
-        tap(movies => console.log(`Search found [${movies.length}] movies`)),
-        catchError(this.onError<Movie[]>("searchMovies", []))
-      );
-  }
-
   private onError<T>(operation = "operation", result?: T) {
     return (error: any): Observable<T> => {
       console.error(`[${operation}] failed with error [${error.status} / ${error.message}]`);

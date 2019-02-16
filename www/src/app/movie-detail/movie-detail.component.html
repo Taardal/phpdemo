@@ -1,13 +1,15 @@
 <div *ngIf="movie">
   <h2>{{ movie.title | uppercase }}</h2>
   <div><span>Id: </span>{{ movie.id }}</div>
-  <div><span>Imdb Id: </span>{{ movie.imdbId }}</div>
+  <div>
+    <label>Imdb id: <input [(ngModel)]="movie.imdbId" placeholder="Imdb id" /></label>
+  </div>
   <div>
     <label>Title: <input [(ngModel)]="movie.title" placeholder="Title"/></label>
   </div>
   <div>
     <label>Year: <input [(ngModel)]="movie.year" placeholder="Year"/></label>
   </div>
-  <button (click)="goBack()">go back</button>
-  <button (click)="save()">save</button>
+  <button (click)="goBack()">Back</button>
+  <button (click)="save()">Save</button>
 </div>

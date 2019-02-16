@@ -7,7 +7,6 @@ import { AppComponent } from "./app.component";
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MoviesComponent } from "./movies/movies.component";
 import { MovieDetailComponent } from "./movie-detail/movie-detail.component";
-import { MovieSearchComponent } from './movie-search/movie-search.component';
 
 @NgModule({
   imports: [
@@ -20,7 +19,7 @@ import { MovieSearchComponent } from './movie-search/movie-search.component';
     AppComponent,
     DashboardComponent, 
     MoviesComponent, 
-    MovieDetailComponent, MovieSearchComponent
+    MovieDetailComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

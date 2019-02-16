@@ -1,6 +1,8 @@
-<h1>{{ title }}</h1>
-<nav>
-  <a routerLink="/dashboard">Dashboard</a>
-  <a routerLink="/movies">Movies</a>
-</nav>
-<router-outlet></router-outlet>
+<ul>
+  <li><a class="brand" routerLink="/">{{ title }}</a></li>
+  <li><a routerLink="/">Dashboard</a></li>
+  <li><a routerLink="/movies">List view</a></li>
+</ul>
+<div class="content">
+  <router-outlet></router-outlet>
+</div>

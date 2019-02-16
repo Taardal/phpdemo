@@ -1,9 +1,7 @@
-<h3>Movies</h3>
 <div class="grid grid-pad">
-  <a class="col-1-4" *ngFor="let movie of movies" routerLink="/detail/{{movie.id}}">
+  <a class="col-1-4" *ngFor="let movie of movies" routerLink="/movie/{{movie.id}}">
     <div class="module movie">
       <h4>{{movie.title}}</h4>
     </div>
   </a>
 </div>
-<app-movie-search></app-movie-search>

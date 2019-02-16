@@ -1,6 +1,6 @@
 <ul class="movies">
   <li *ngFor="let movie of movies">
-    <a routerLink="/detail/{{ movie.id }}">
+    <a routerLink="/movie/{{ movie.id }}">
       <div class="text">
         <span class="badge">{{ movie.id }} </span>{{ movie.title }}
       </div>
