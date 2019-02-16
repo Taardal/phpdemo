@@ -2,13 +2,11 @@
 class Response implements JsonSerializable {
 
     private $code;
-    private $text;
     private $data;
     private $headers;
 
-    private function __construct($code, $text, $data = null) {
+    private function __construct($code, $data = null) {
         $this->code = $code;
-        $this->text = $text;
         $this->data = $data;
         $this->headers = [
             "Content-Type" => "application/json", 
@@ -17,29 +15,29 @@ class Response implements JsonSerializable {
     }
 
     public static function ok($data = null) {
-        return new Response(200, "OK", $data);
+        return new Response(200, $data);
     }
 
     public static function created($location) {
-        $response = new Response(201, "Created");
+        $response = new Response(201);
         $response->addHeader("Location", $location);
         return $response;
     }
 
     public static function badRequest() {
-        return new Response(400, "Bad Request");
+        return new Response(400);
     }
 
     public static function notFound() {
-        return new Response(404, "Not Found");
+        return new Response(404);
     }
 
     public static function notAllowed() {
-        return new Response(405, "Not Allowed");
+        return new Response(405);
     }
 
     public static function internalServerError() {
-        return new Response(500, "Internal Server Error");
+        return new Response(500);
     }
 
     public function addHeader($key, $value) {
@@ -57,14 +55,7 @@ class Response implements JsonSerializable {
     }
 
     public function jsonSerialize() {
-        $content =  [
-            "code" => $this->code,
-            "message" => $this->text
-        ];
-        if ($this->data !== null) {
-            $content["data"] = $this->data;
-        }
-        return $content;
+        return $this->data;
     }
 
 }
