@@ -10,7 +10,10 @@ class Response implements JsonSerializable {
         $this->code = $code;
         $this->text = $text;
         $this->data = $data;
-        $this->headers = [];
+        $this->headers = [
+            "Content-Type" => "application/json", 
+            "Charset" => "UTF-8"
+        ];
     }
 
     public static function ok($data = null) {
@@ -19,7 +22,7 @@ class Response implements JsonSerializable {
 
     public static function created($location) {
         $response = new Response(201, "Created");
-        $response->addHeader("Location: $location");
+        $response->addHeader("Location", $location);
         return $response;
     }
 
@@ -39,27 +42,29 @@ class Response implements JsonSerializable {
         return new Response(500, "Internal Server Error");
     }
 
-    public function addHeader($header) {
-        $this->headers[] = $header;
+    public function addHeader($key, $value) {
+        if (!array_key_exists($key, $this->headers)) {
+            $this->headers[$key] = $value;
+        }
     }
 
     public function send() {
         http_response_code($this->code);
-        foreach ($this->headers as $header) {
-            header($header);
+        foreach ($this->headers as $key => $value) {
+            header("$key: $value");
         }
         die(json_encode($this));
     }
 
     public function jsonSerialize() {
-        $toBeSerialized =  [
+        $content =  [
             "code" => $this->code,
             "message" => $this->text
         ];
         if ($this->data !== null) {
-            $toBeSerialized["data"] = $this->data;
+            $content["data"] = $this->data;
         }
-        return $toBeSerialized;
+        return $content;
     }
 
 }

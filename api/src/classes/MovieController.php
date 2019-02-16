@@ -5,11 +5,11 @@ class MovieController extends Controller {
     private const COLLECTION_RESOURCE = self::RESOURCE . RX_URL_END;
     private const SPECIFIC_RESOURCE = self::RESOURCE . RX_SLASH . RX_NUMBERS . RX_URL_END;
     
-    private $movieRepository;
+    private $movieService;
 
-    public function __construct($movieRepository) {
+    public function __construct($movieService) {
         parent::__construct();
-        $this->movieRepository = $movieRepository;
+        $this->movieService = $movieService;
     }
 
     protected function getResources() {
@@ -43,20 +43,20 @@ class MovieController extends Controller {
     }
 
     private function getMultiple($request) {
-        $movies = $this->movieRepository->findAll();
-        return Response::ok($movies ?: []);
+        $movies = $this->movieService->getAll();
+        return Response::ok($movies);
     }
 
     private function getSingle($request) {
         $id = end($request->getPathParameters());
-        $movie = $this->movieRepository->findById($id);
+        $movie = $this->movieService->getById($id);
         return $movie ? Response::ok($movie) : Response::notFound();
     }
     
     private function insertSingle($request) {
         $movie = Movie::jsonDeserialize($request->getBody());
-        $id = $this->movieRepository->insert($movie);
-        if ($id > 0) {
+        $id = $this->movieService->create($movie);
+        if ($id) {
             $location = $request->getPath() . "/$id";
             return Response::created($location);
         } else {
@@ -66,29 +66,26 @@ class MovieController extends Controller {
 
     private function updateMultiple($request) {
         $movies = Movie::jsonDeserializeMultiple($request->getBody());
-        $rowsAffected = $this->movieRepository->update($movies);
-        return $rowsAffected > 0 ? Response::ok() : Response::badRequest();
+        $updated = $this->movieService->update($movies);
+        return $updated ? Response::ok() : Response::badRequest();
     }
 
     private function updateSingle($request) {
         $id = end($request->getPathParameters());
         $movie = Movie::jsonDeserialize($request->getBody());
-        if ($movie->getId() != $id) {
-            $movie->setId($id);
-        }
-        $rowsAffected = $this->movieRepository->update([$movie]);
-        return $rowsAffected > 0 ? Response::ok() : Response::badRequest();
+        $updated = $this->movieService->updateById($movie, $id);
+        return $updated ? Response::ok() : Response::badRequest();
     }
 
     private function deleteMultiple($request) {
-        $rowsAffected = $this->movieRepository->deleteAll();
-        return $rowsAffected > 0 ? Response::ok() : Response::badRequest();
+        $deleted = $this->movieService->deleteAll();
+        return $deleted ? Response::ok() : Response::badRequest();
     }
 
     private function deleteSingle($request) {
         $id = end($request->getPathParameters());
-        $rowsAffected = $this->movieRepository->deleteById($id);
-        return $rowsAffected > 0 ? Response::ok() : Response::badRequest();
+        $deleted = $this->movieService->deleteById($id);
+        return $deleted ? Response::ok() : Response::badRequest();
     }
 
 }

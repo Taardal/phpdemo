@@ -1,7 +1,7 @@
 <?php
 class Request {
 
-    private $host;
+    private $headers;
     private $method;
     private $body;
     private $uri;
@@ -10,7 +10,7 @@ class Request {
     private $queryParameters;
 
     private function __construct() {
-        $this->host = $_SERVER['HTTP_HOST'];
+        $this->headers = getallheaders();
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->uri = $_SERVER['REQUEST_URI'];
         if ($this->uri) {
@@ -27,8 +27,8 @@ class Request {
         return new Request();
     }
 
-    public function getHost() {
-        return $this->host;
+    public function getHeaders() {
+        return $this->headers;
     }
 
     public function getMethod() {

@@ -1,12 +1,12 @@
 <?php
 class MovieRepository {
-    
+
     private $dataSource;
     
     public function __construct($dataSource) {
         $this->dataSource = $dataSource;
     }
-    
+
     public function findAll() {
         $connection = $this->dataSource->getConnection();
         $preparedStatement = $connection->prepare("SELECT * FROM `movie`");
@@ -19,7 +19,7 @@ class MovieRepository {
     public function findById($id) {
         $connection = $this->dataSource->getConnection();
         $preparedStatement = $connection->prepare("SELECT * FROM `movie` WHERE `id` = ?");
-        $preparedStatement->bind_param("s", $id);
+        $preparedStatement->bind_param("i", $id);
         $preparedStatement->execute();
         $movies = $this->getMovies($preparedStatement);
         $preparedStatement->close();
@@ -27,7 +27,7 @@ class MovieRepository {
     }
 
     public function insert($movie) {
-        $sql = "INSERT INTO `movie` (`imdbId`, `title`, `year`) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO `movie` (`imdb_id`, `title`, `year`) VALUES (?, ?, ?)";
         $sqlParameters = [
             $movie->getImdbId(), 
             $movie->getTitle(), 
@@ -43,7 +43,7 @@ class MovieRepository {
     }
 
     public function update($movies) {
-        $sql = "UPDATE `movie` SET `imdbId` = ?, `title` = ?, `year` = ? WHERE `id` = ?";
+        $sql = "UPDATE `movie` SET `imdb_id` = ?, `title` = ?, `year` = ? WHERE `id` = ?";
         $connection = $this->dataSource->getConnection();
         $preparedStatement = $connection->prepare($sql);
         $preparedStatement->bind_param("ssii", $imdbId, $title, $year, $id);
@@ -85,10 +85,19 @@ class MovieRepository {
         $movies = [];
         $resultSet = $preparedStatement->get_result();
         while($row = $resultSet->fetch_assoc()) {
-            $movies[] = Movie::fromAssociativeArray($row);
+            $movies[] = $this->getMovie($row);
         };
         $resultSet->close();
         return $movies;
+    }
+
+    private function getMovie($row) {
+        $movie = new Movie();
+        $movie->setId($row['id']);
+        $movie->setImdbId($row['imdb_id']);
+        $movie->setTitle($row['title']);
+        $movie->setYear($row['year']);
+        return $movie;
     }
 
 }
